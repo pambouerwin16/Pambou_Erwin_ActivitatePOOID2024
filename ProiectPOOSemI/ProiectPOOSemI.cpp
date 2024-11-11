@@ -2,10 +2,12 @@
 #include <pplwin.h>
 #include <string>
 
+//Declaram inainte clasele si functia prietena pentru a anunta compilatorul ca acestea exista
 class Proprietate;
 class Parcare;
 class Apartament;
 void AfisareComplex(const Proprietate& p, const Apartament& a, const Parcare& parc);
+
 using namespace std;
 
 // Cele 3 clase initiale for fi Proprietate, Apartament, Parcare deoarece contin initialele mele P (Pambou) si respectiv E (Erwin-Emmanuel)
@@ -169,6 +171,39 @@ public:
         return nrProprietati;
     }
     #pragma endregion
+	#pragma region Overloads
+    //Supraincarcare operator de atribuire
+    Proprietate operator=(const Proprietate p)
+    {
+        if(this != &p)
+        {
+            pret = p.pret;
+            locatie = p.locatie;
+            nrFacilitati = p.nrFacilitati;
+            if(facilitati != nullptr)
+            {
+                delete[] facilitati;
+            }
+
+            facilitati = new string[nrFacilitati];
+            
+            for(int i = 0; i < nrFacilitati; i++)
+            {
+                facilitati[i] = p.facilitati[i];
+            }
+        }
+        return *this;
+    }
+    //Supraincarcare operator index
+    string& operator[](int index)
+    {
+        if(index >= 0 && index < nrFacilitati)
+        {
+            return facilitati[index];
+        }
+        throw "Index out of range";
+    }
+	#pragma endregion
 };
 
 //Initializare atribut static
@@ -344,6 +379,30 @@ public:
     static int GetNrApartamente()
     {
         return nrApartamente;
+    }
+    #pragma endregion
+    #pragma region Overloads
+    Apartament operator=(const Apartament a)
+    {
+        if(this != &a)
+        {
+            nrCamere = a.nrCamere;
+            intretinere = a.intretinere;
+            nrLocuitori = a.nrLocuitori;
+
+            if(locuitori != nullptr)
+            {
+                delete[] locuitori;
+            }
+
+            locuitori = new string[nrLocuitori];
+            
+            for(int i = 0; i < nrLocuitori; i++)
+            {
+                locuitori[i] = a.locuitori[i];
+            }
+        }
+        return *this;
     }
     #pragma endregion
 };
@@ -556,6 +615,28 @@ public:
         return nrParcari;
     }
     #pragma endregion
+    #pragma region Overloads
+    Parcare operator=(const Parcare p)
+    {
+        if(this != &p)
+        {
+            capacitateLocuri = p.capacitateLocuri;
+            locuriOcupate = p.locuriOcupate;
+            if(idMasini != nullptr)
+            {
+                delete[] idMasini;
+            }
+
+            idMasini = new unsigned int[locuriOcupate];
+
+            for(unsigned int i = 0; i < locuriOcupate; i++)
+            {
+                idMasini[i] = p.idMasini[i];
+            }
+        }
+        return *this;
+    }
+    #pragma endregion
 };
 
 //Initializam atributul static
@@ -691,4 +772,13 @@ void main()
     Parcare::EvacuareMasina(435, parcare1);
 
     AfisareComplex(prop1, ap1, parcare1);
+
+    cout<<"Atribuire...."<<endl;
+    
+    prop3 = prop1;
+    ap3 = ap1;
+    parcare3 = parcare1;
+    AfisareComplex(prop3,ap3,parcare3);
+
+    cout<<"Facilitatea nr "<<1<<": "<<prop3[0];
 }
