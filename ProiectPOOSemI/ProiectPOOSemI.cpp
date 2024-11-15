@@ -173,7 +173,7 @@ public:
     #pragma endregion
 	#pragma region Overloads
     //Supraincarcare operator de atribuire
-    Proprietate operator=(const Proprietate p)
+    Proprietate& operator=(const Proprietate& p)
     {
         if(this != &p)
         {
@@ -202,6 +202,16 @@ public:
             return facilitati[index];
         }
         throw "Index out of range";
+    }
+    //Supraincarcare operator compariate (mai mic)
+    bool operator<(const Proprietate& p)const
+    {
+        return pret < p.pret;
+    }
+    //Supraincarcare operator egalitate
+    bool operator==(const Proprietate& p)const
+    {
+        return pret == p.pret;
     }
 	#pragma endregion
 };
@@ -382,7 +392,8 @@ public:
     }
     #pragma endregion
     #pragma region Overloads
-    Apartament operator=(const Apartament a)
+    //Supraincarcare operator atribuire
+    Apartament& operator=(const Apartament& a)
     {
         if(this != &a)
         {
@@ -403,6 +414,15 @@ public:
             }
         }
         return *this;
+    }
+    //Supraincarcare operator index
+    string& operator[](int index)
+    {
+        if(index >= 0 && index < nrLocuitori)
+        {
+            return locuitori[index];
+        }
+        throw "Index out of range";
     }
     #pragma endregion
 };
@@ -616,7 +636,7 @@ public:
     }
     #pragma endregion
     #pragma region Overloads
-    Parcare operator=(const Parcare p)
+    Parcare& operator=(const Parcare &p)
     {
         if(this != &p)
         {
@@ -637,6 +657,15 @@ public:
         return *this;
     }
     #pragma endregion
+    //Supraincarcare operator index
+    int operator[](unsigned int index)
+    {
+        if(index >= 0 && index < locuriOcupate)
+        {
+            return idMasini[index];
+        }
+        throw "Index out of range";
+    }
 };
 
 //Initializam atributul static
@@ -780,5 +809,9 @@ void main()
     parcare3 = parcare1;
     AfisareComplex(prop3,ap3,parcare3);
 
-    cout<<"Facilitatea nr "<<1<<": "<<prop3[0];
+    cout<<"Facilitatea 3, elementul nr "<<1<<": "<<prop3[0]<<endl;
+    cout<<"Apartament 3, elementul nr "<<3<<": "<<ap3[2]<<endl;
+    cout<<"Parcarea 3, elementul nr "<<2<<": "<<parcare3[1]<<endl;
+
+    cout<<"Proprietate mai ieftina dintre 1 si 3 este: "<<(prop1<prop3?"prop1":"prop3")<<endl;
 }
