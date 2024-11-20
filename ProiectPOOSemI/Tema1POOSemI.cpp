@@ -9,7 +9,7 @@ class Autobuz
     int capacitate;
     int nrPersoaneImbarcate;
     char* producator;
-
+    friend ostream& operator<<(ostream& stream, const Autobuz& a);
 public:
     Autobuz():idAutobuz(++nrAutobuze)
     {
@@ -156,6 +156,21 @@ public:
         return *this;
     }
 
+    operator int()const
+    {
+        return nrPersoaneImbarcate;
+    }
+    
+    explicit operator int()
+    {
+        return nrPersoaneImbarcate;
+    }
+
+    bool operator>(const Autobuz& a)const
+    {
+        return capacitate>a.capacitate;
+    }
+
     const char* GetProducator() const
     {
         return producator;
@@ -186,8 +201,27 @@ public:
             }
         }
     }
+
+    void SetCapacitate(int cap)
+    {
+        capacitate = cap;
+    }
 };
 int Autobuz::nrAutobuze = 0;
+
+ostream& operator<<(ostream& stream, const Autobuz& a)
+{
+    //Nu imi este clar daca se doreste includerea membrilor statici asa ca l-am inclus si pe acesta (nrAutobuze)
+    stream << Autobuz::nrAutobuze<<"; "<<a.idAutobuz<<"; "<<a.capacitate<<"; "<<a.nrPersoaneImbarcate<<"; ";
+
+    int len = strlen(a.producator);
+    for(int i = 0; i < len; i++)
+    {
+        stream << a.producator[i];
+    }
+
+    return stream;
+}
 
 void main()
 {
@@ -201,9 +235,14 @@ void main()
         cout<<"producator1: "<<a1.GetProducator()<<endl;
         cout<<"producator2: "<<a2.GetProducator()<<endl;
         a2 = a1;
+        a2.SetCapacitate(8);
         cout<<"producator1: "<<a1.GetProducator()<<endl;
         cout<<"producator2: "<<a2.GetProducator()<<endl;
         cout<<"locuri libere in autobuz: "<<a2.GetNrLocuriLibere()<<endl;
+        cout<<a1<<endl;
+        cout<<a2<<endl;
+        cout<<"Overload cast la int:"<<(int)a1<<endl;
+        cout<<"Are autobuzul 1 capacitate mai mare decat autobuzul 2?"<<endl<<(a1>a2?"Da":"Nu")<<endl;
     }
     catch (exception& e)
     {
