@@ -58,14 +58,6 @@ public:
                         producator[i] = prod[i];
                     }
                 }
-                else
-                {
-                    throw invalid_argument("Numele producatorului este gol...");
-                }
-            }
-            else
-            {
-                throw invalid_argument("Numele producatorului este null...");
             }
         }
         catch (...)
@@ -86,16 +78,40 @@ public:
 
     Autobuz(const Autobuz& a):idAutobuz(++nrAutobuze)
     {
-        try
+        capacitate = a.capacitate;
+        nrPersoaneImbarcate = a.nrPersoaneImbarcate;
+
+        if(a.producator != nullptr)
+        {
+            int len = strlen(a.producator)+1;
+            producator = new char[len];
+            
+            for(int i = 0; i < len; i++)
+            {
+                producator[i] = a.producator[i];
+            }
+        }
+        else
+        {
+            producator = nullptr;
+        }
+    }
+
+    Autobuz& operator=(const Autobuz& a)
+    {
+        if(this != &a)
         {
             capacitate = a.capacitate;
             nrPersoaneImbarcate = a.nrPersoaneImbarcate;
-
+            
+            if(producator != nullptr)
+                delete[] producator;
+            
             if(a.producator != nullptr)
             {
                 int len = strlen(a.producator)+1;
                 producator = new char[len];
-                
+        
                 for(int i = 0; i < len; i++)
                 {
                     producator[i] = a.producator[i];
@@ -103,54 +119,8 @@ public:
             }
             else
             {
-                throw invalid_argument("Numele producatorului este null, nu poate fi copit.");
+                producator = nullptr;
             }
-        }
-        catch (...)
-        {
-            cout<<"Exceptie intalnita in copy constructor, la copierea autobuzului cu ID "<<a.idAutobuz<<endl;
-            if(producator != nullptr)
-                delete[] producator;
-            throw;
-        }
-    }
-
-    Autobuz& operator=(const Autobuz& a)
-    {
-        try
-        {
-            if(this != &a)
-            {
-                capacitate = a.capacitate;
-                nrPersoaneImbarcate = a.nrPersoaneImbarcate;
-                
-                if(producator != nullptr)
-                    delete[] producator;
-                
-                if(a.producator != nullptr)
-                {
-                    int len = strlen(a.producator)+1;
-                    producator = new char[len];
-            
-                    for(int i = 0; i < len; i++)
-                    {
-                        producator[i] = a.producator[i];
-                    }
-                }
-                else
-                {
-                    producator = nullptr;
-                }
-            }
-            else
-            {
-                throw invalid_argument("A fost incercata auto-atribuirea");
-            }
-        }
-        catch (invalid_argument&)
-        {
-            cout<<"Exceptie intalnita la copierea autobuzului cu ID "<<a.idAutobuz<<endl;
-            throw;
         }
         
         return *this;
@@ -184,7 +154,7 @@ public:
         }
         catch (exception&)
         {
-            cout<<"Exceptie intampinata la cautarea numarului de locuri liebre";
+            cout<<"Exceptie intampinata la cautarea numarului de locuri libere";
             throw;
         }
     }
@@ -214,10 +184,13 @@ ostream& operator<<(ostream& stream, const Autobuz& a)
     //Nu imi este clar daca se doreste includerea membrilor statici asa ca l-am inclus si pe acesta (nrAutobuze)
     stream << Autobuz::nrAutobuze<<"; "<<a.idAutobuz<<"; "<<a.capacitate<<"; "<<a.nrPersoaneImbarcate<<"; ";
 
-    int len = strlen(a.producator);
-    for(int i = 0; i < len; i++)
+    if(a.producator != nullptr)
     {
-        stream << a.producator[i];
+        int len = strlen(a.producator);
+        for(int i = 0; i < len; i++)
+        {
+            stream << a.producator[i];
+        }
     }
 
     return stream;
